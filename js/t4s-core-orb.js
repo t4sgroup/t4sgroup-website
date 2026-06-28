@@ -47,9 +47,9 @@ function init() {
     transition: 'opacity 0.25s linear',
     background:
       'radial-gradient(ellipse 120% 95% at 50% 45%, ' +
-      'rgba(34, 14, 18, 0.96) 0%, ' +
-      'rgba(22, 10, 13, 0.98) 55%, ' +
-      'rgba(14, 6, 8, 0.99) 100%)',
+      'rgba(28, 18, 8, 0.96) 0%, ' +
+      'rgba(18, 12, 6, 0.98) 55%, ' +
+      'rgba(10, 10, 12, 0.99) 100%)',
   });
   document.body.appendChild(overlay);
 
@@ -70,9 +70,9 @@ function init() {
     transition: 'opacity 0.25s linear',
     background:
       'radial-gradient(ellipse 95% 75% at 55% 50%, ' +
-      'rgba(72, 28, 34, 0.22) 0%, ' +
-      'rgba(46, 18, 24, 0.14) 45%, ' +
-      'rgba(20, 8, 12, 0) 80%)',
+      'rgba(120, 62, 20, 0.22) 0%, ' +
+      'rgba(80, 42, 14, 0.14) 45%, ' +
+      'rgba(20, 12, 6, 0) 80%)',
   });
   document.body.appendChild(appliedOverlay);
 
@@ -184,8 +184,8 @@ function init() {
     const ctx = c.getContext('2d');
     const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 22);
     g.addColorStop(0, 'rgba(255,255,255,1)');
-    g.addColorStop(0.45, 'rgba(255,200,200,0.85)');
-    g.addColorStop(1, 'rgba(248,113,113,0)');
+    g.addColorStop(0.45, 'rgba(255,212,170,0.85)');
+    g.addColorStop(1, 'rgba(242,146,74,0)');
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, 64, 64);
     const tex = new THREE.CanvasTexture(c);
@@ -200,7 +200,7 @@ function init() {
     transparent: true,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
-    color: 0xffc8c8,
+    color: 0xffd2a6,
     opacity: 0.95,
   });
 
