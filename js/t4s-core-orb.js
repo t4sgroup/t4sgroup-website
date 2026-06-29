@@ -118,16 +118,16 @@ function init() {
     const sFade = tStack ? visibilityForRect(tStack.getBoundingClientRect(), vh) : 0;
     const maxFade = Math.max(aFade, cFade, sFade);
 
-    // Su mobile/touch disattiviamo gli overlay specifici di sezione
-    // (dark warm-burgundy su T4S Core, warm glow su Applied AI): creavano
-    // una sfumatura diversa dalle altre sezioni. Così il tema (glow
-    // arancione su nero) resta UNIFORME su tutta la pagina. Su desktop
-    // restano invariati.
+    // TEMA UNIFORME su mobile/touch: le altre sezioni sono "bagnate" di
+    // caldo dall'orb nativo; su Applied AI / T4S Core il nativo è nascosto,
+    // quindi senza warmth quelle sezioni risultavano più SCURE (sfumatura
+    // diversa). Soluzione: niente overlay scuro su T4S Core, e stessa
+    // warmth calda (quella di Applied) su ENTRAMBE Applied e Core → stesso
+    // tono delle altre sezioni. Su desktop invariato (dark su Core, warm
+    // solo su Applied).
     const themeMobile = window.matchMedia('(max-width:768px),(pointer:coarse)').matches;
-    // Overlay dark warm-burgundy su T4S Core
     overlay.style.opacity = String(themeMobile ? 0 : cFade);
-    // Soft warm glow solo su Applied AI
-    appliedOverlay.style.opacity = String(themeMobile ? 0 : aFade);
+    appliedOverlay.style.opacity = String(themeMobile ? Math.max(aFade, cFade) : aFade);
     if (bgWrapper) {
       // Chip nativo (canvas r3f di sfondo) nascosto su Applied AI + T4S
       // Core: su queste due sezioni vogliamo vedere SOLO la palla
@@ -275,13 +275,12 @@ function init() {
     const Y_MID      = 0.05;
     const Y_TOP_EXIT = HALF_H + 2.5;
     const isMobile = vw < 768;
-    // Su mobile riduci la differenza SCALE_APP↔SCALE_CORE: 30% di crescita
-    // in 1vh di scroll è troppo per qualsiasi curva (linear, smoothstep,
-    // cubic) → si vedeva un pop in entrata/uscita. Magnitude dimezzata
-    // (~13%) + lineare = gonfiore impercettibile e naturale. T4S Core
-    // invariato.
-    const SCALE_APP  = (isMobile ? 1.15 : 1.0) * mScale;
-    const SCALE_CORE = 1.3 * mScale;
+    // Su MOBILE la palla NON cresce durante la discesa: SCALE_CORE =
+    // SCALE_APP. La crescita ("gonfiore") risultava buggata/a scatti sui
+    // telefoni → scala costante = niente gonfiore. Su desktop invariata
+    // (cresce da 1.0 a 1.3).
+    const SCALE_APP  = (isMobile ? 1.2 : 1.0) * mScale;
+    const SCALE_CORE = (isMobile ? 1.2 : 1.3) * mScale;
 
     const ratioCore = coreRect.top / vh;
     const ratioApp  = appliedRect.top / vh;
