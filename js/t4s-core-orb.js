@@ -79,9 +79,21 @@ function init() {
   // ── Canvas nativo (chip / sfera del bundle Next.js) ───────────────
   // Lo nascondiamo solo dove ci interessa: Applied AI (no chip) e T4S
   // Core (sotto al nostro overlay). Sulle altre sezioni resta intatto.
-  const bgWrapper = document.querySelector(
+  let bgWrapper = document.querySelector(
     'div[aria-hidden="true"][class*="fixed"][class*="inset-0"][class*="pointer-events-none"][style*="z-index:0"]'
   );
+  // Dopo l'hydration di React lo stile inline viene riserializzato come
+  // "z-index: 0" (con spazio) e il selettore sopra non matcha più → il chip
+  // nativo non veniva nascosto e restava visibile insieme alla palla.
+  // Fallback robusto: il wrapper del canvas nativo è l'unico div aria-hidden
+  // / pointer-events-none che contiene un <canvas>.
+  if (!bgWrapper) {
+    document
+      .querySelectorAll('div[aria-hidden="true"][class*="pointer-events-none"]')
+      .forEach((el) => {
+        if (!bgWrapper && el.querySelector('canvas')) bgWrapper = el;
+      });
+  }
   if (bgWrapper && !bgWrapper.style.transition) {
     bgWrapper.style.transition = 'opacity 0.25s linear';
   }
