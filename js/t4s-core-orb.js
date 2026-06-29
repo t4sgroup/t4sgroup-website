@@ -118,16 +118,14 @@ function init() {
     const sFade = tStack ? visibilityForRect(tStack.getBoundingClientRect(), vh) : 0;
     const maxFade = Math.max(aFade, cFade, sFade);
 
-    // TEMA UNIFORME su mobile/touch: le altre sezioni sono "bagnate" di
-    // caldo dall'orb nativo; su Applied AI / T4S Core il nativo è nascosto,
-    // quindi senza warmth quelle sezioni risultavano più SCURE (sfumatura
-    // diversa). Soluzione: niente overlay scuro su T4S Core, e stessa
-    // warmth calda (quella di Applied) su ENTRAMBE Applied e Core → stesso
-    // tono delle altre sezioni. Su desktop invariato (dark su Core, warm
-    // solo su Applied).
+    // Su mobile/touch NIENTE overlay specifici di sezione: né il dark su
+    // T4S Core (rendeva la sezione troppo scura), né la warmth arancione
+    // su Applied AI (creava una "macchia" arancione al centro). Su queste
+    // sezioni resta solo lo sfondo del tema + la palla, senza blob
+    // arancioni. Su desktop invariato (dark su Core, warm su Applied).
     const themeMobile = window.matchMedia('(max-width:768px),(pointer:coarse)').matches;
     overlay.style.opacity = String(themeMobile ? 0 : cFade);
-    appliedOverlay.style.opacity = String(themeMobile ? Math.max(aFade, cFade) : aFade);
+    appliedOverlay.style.opacity = String(themeMobile ? 0 : aFade);
     if (bgWrapper) {
       // Chip nativo (canvas r3f di sfondo) nascosto su Applied AI + T4S
       // Core: su queste due sezioni vogliamo vedere SOLO la palla
