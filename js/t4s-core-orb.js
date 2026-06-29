@@ -126,8 +126,15 @@ function init() {
       const hideChip = Math.max(aFade, cFade);
       if (hideChip > 0) {
         bgWrapper.style.opacity = String(1 - hideChip);
+        // Quando è (quasi) del tutto nascosto — per gran parte di Applied
+        // AI / T4S Core e di tutta la discesa — usa visibility:hidden così
+        // il compositor non rifonde il canvas WebGL a schermo intero a
+        // ogni frame (una delle cause dello scatto in discesa). L'opacità
+        // resta solo per il breve fade ai bordi delle sezioni.
+        bgWrapper.style.visibility = hideChip > 0.985 ? 'hidden' : '';
       } else {
         bgWrapper.style.removeProperty('opacity');
+        bgWrapper.style.visibility = '';
       }
     }
   }
@@ -387,6 +394,12 @@ function init() {
       curVis += (target.vis - curVis) * kv;
     }
     canvas.style.opacity = curVis.toFixed(3);
+
+    // Salta del tutto il render quando la palla è invisibile e ferma
+    // (tutte le sezioni tranne Applied AI / T4S Core): evita un intero
+    // pass WebGL a 60fps dove non si vede nulla → meno carico complessivo
+    // e scorrimento più fluido durante la discesa.
+    if (curVis < 0.002 && target.vis === 0) return;
 
     orb.rotation.y += dt * 0.16;
     orb.rotation.x += dt * 0.04;
