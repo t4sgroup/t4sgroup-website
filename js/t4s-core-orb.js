@@ -118,10 +118,16 @@ function init() {
     const sFade = tStack ? visibilityForRect(tStack.getBoundingClientRect(), vh) : 0;
     const maxFade = Math.max(aFade, cFade, sFade);
 
+    // Su mobile/touch disattiviamo gli overlay specifici di sezione
+    // (dark warm-burgundy su T4S Core, warm glow su Applied AI): creavano
+    // una sfumatura diversa dalle altre sezioni. Così il tema (glow
+    // arancione su nero) resta UNIFORME su tutta la pagina. Su desktop
+    // restano invariati.
+    const themeMobile = window.matchMedia('(max-width:768px),(pointer:coarse)').matches;
     // Overlay dark warm-burgundy su T4S Core
-    overlay.style.opacity = String(cFade);
+    overlay.style.opacity = String(themeMobile ? 0 : cFade);
     // Soft warm glow solo su Applied AI
-    appliedOverlay.style.opacity = String(aFade);
+    appliedOverlay.style.opacity = String(themeMobile ? 0 : aFade);
     if (bgWrapper) {
       // Chip nativo (canvas r3f di sfondo) nascosto su Applied AI + T4S
       // Core: su queste due sezioni vogliamo vedere SOLO la palla
