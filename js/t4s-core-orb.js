@@ -12,7 +12,11 @@
 //   - Sulle altre sezioni (Cloud, Data, Security, Stack, ...) niente:
 //     overlay invisibile, chip nativo intatto, palla nascosta.
 
-import * as THREE from 'https://esm.sh/three@0.169.0';
+// Three.js ospitato in locale (non più da esm.sh): l'import dalla CDN
+// esterna falliva su alcuni browser mobile → lo script orb non partiva,
+// quindi il chip restava visibile e la palla non compariva. Self-hosting
+// = nessuna dipendenza esterna, l'orb parte ovunque (mobile incluso).
+import * as THREE from '/js/three.module.min.js';
 
 const ORB_ID = 't4s-core-orb-canvas';
 const OVERLAY_ID = 't4s-core-orb-overlay';
@@ -408,8 +412,14 @@ function init() {
   tick();
 }
 
-if (document.readyState !== 'loading') {
-  init();
+// Avvia dopo il 'load' (con un piccolo ritardo) così l'hydration di React
+// è già avvenuta: evita che un eventuale re-render lato client invalidi i
+// riferimenti agli elementi (sezioni / canvas nativo) usati dall'orb.
+function boot() {
+  setTimeout(init, 300);
+}
+if (document.readyState === 'complete') {
+  boot();
 } else {
-  document.addEventListener('DOMContentLoaded', init);
+  window.addEventListener('load', boot);
 }
