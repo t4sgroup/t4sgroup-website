@@ -119,12 +119,13 @@ function init() {
     // Soft warm glow solo su Applied AI
     appliedOverlay.style.opacity = String(aFade);
     if (bgWrapper) {
-      // Chip nativo nascosto SOLO su T4S Core: lì vogliamo la palla
-      // half-cut senza il chip dietro. Su Applied AI (e Stack) il chip
-      // resta visibile → la palla compare e scende esattamente come
-      // prima, senza toccare lo sfondo nativo di quelle sezioni.
-      if (cFade > 0) {
-        bgWrapper.style.opacity = String(1 - cFade);
+      // Chip nativo (canvas r3f di sfondo) nascosto su Applied AI + T4S
+      // Core: su queste due sezioni vogliamo vedere SOLO la palla
+      // particellare, senza il disegno del chip dietro/sovrapposto.
+      // Stack e le altre sezioni restano intatte.
+      const hideChip = Math.max(aFade, cFade);
+      if (hideChip > 0) {
+        bgWrapper.style.opacity = String(1 - hideChip);
       } else {
         bgWrapper.style.removeProperty('opacity');
       }
