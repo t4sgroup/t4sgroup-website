@@ -34,6 +34,7 @@ function init() {
   const tCore = document.getElementById('t4s-core');
   const tApplied = document.getElementById('horizon-ai');
   const tStack = document.getElementById('tech-stack');
+  const tSecurity = document.getElementById('horizon-security');
   if (!tCore || !tApplied) return setTimeout(init, 200);
 
   // ── Overlay warm-dark sulla sola T4S Core ─────────────────────────
@@ -132,7 +133,8 @@ function init() {
       // Core: su queste due sezioni vogliamo vedere SOLO la palla
       // particellare, senza il disegno del chip dietro/sovrapposto.
       // Stack e le altre sezioni restano intatte.
-      const hideChip = Math.max(aFade, cFade);
+      const sSec = tSecurity ? visibilityForRect(tSecurity.getBoundingClientRect(), vh) : 0;
+      const hideChip = Math.max(aFade, cFade, sSec);
       if (hideChip > 0) {
         bgWrapper.style.opacity = String(1 - hideChip);
         // Quando è (quasi) del tutto nascosto — per gran parte di Applied
@@ -239,6 +241,37 @@ function init() {
 
   const orb = new THREE.Points(geometry, material);
   scene.add(orb);
+
+  // ── Lucchetto particellare su Cybersecurity (al posto dello scudo nativo) ──
+  // Oggetto separato dalla palla: stesso materiale arancione, mostrato solo
+  // quando la sezione Cybersecurity è in vista. Non altera la logica della palla.
+  const PAD_N = (window.innerWidth < 760) ? 1700 : 2600;
+  const padArr = new Float32Array(PAD_N * 3);
+  const BW = 0.72, BTOP = 0.25, BBOT = -1.15, RSH = 0.5, SHCY = 0.2, BMID = (BTOP + BBOT) / 2;
+  for (let i = 0; i < PAD_N; i++) {
+    let x, y; const z = (Math.random() - 0.5) * 0.2; const u = Math.random();
+    if (u < 0.60) {                                   // corpo (rettangolo arrotondato + buco serratura)
+      x = (Math.random() * 2 - 1) * BW;
+      y = BBOT + Math.random() * (BTOP - BBOT);
+      const r = 0.22, ix = Math.abs(x) - (BW - r), iy = Math.abs(y - BMID) - ((BTOP - BBOT) / 2 - r);
+      if (ix > 0 && iy > 0 && ix * ix + iy * iy > r * r) { x *= 0.82; y = BMID + (y - BMID) * 0.82; }
+      const ky = y + 0.45;
+      if (x * x + ky * ky < 0.045) { const an = Math.random() * 6.283, rr = 0.21 + Math.random() * 0.03; x = Math.cos(an) * rr; y = -0.45 + Math.sin(an) * rr; }
+    } else if (u < 0.85) {                            // shackle: arco semicircolare in alto
+      const t = Math.random() * Math.PI, rr = RSH + (Math.random() - 0.5) * 0.1;
+      x = Math.cos(t) * rr; y = SHCY + Math.sin(t) * rr;
+    } else {                                          // gambe verticali del shackle
+      const side = Math.random() < 0.5 ? -1 : 1;
+      x = side * RSH + (Math.random() - 0.5) * 0.1; y = SHCY - Math.random() * 0.45;
+    }
+    padArr[i*3] = x; padArr[i*3+1] = y; padArr[i*3+2] = z;
+  }
+  const padGeo = new THREE.BufferGeometry();
+  padGeo.setAttribute('position', new THREE.BufferAttribute(padArr, 3));
+  const padlock = new THREE.Points(padGeo, material.clone());
+  padlock.visible = false;
+  scene.add(padlock);
+  let padVis = 0;
 
   // ── Trajectory ────────────────────────────────────────────────────
   // Su Applied AI: palla a SINISTRA (testo in colonna destra → spazio
@@ -404,13 +437,29 @@ function init() {
       const kv = 1 - Math.exp(-VIS_DAMP * dt);
       curVis += (target.vis - curVis) * kv;
     }
-    canvas.style.opacity = curVis.toFixed(3);
+    // ── Lucchetto: visibile quando Cybersecurity è in vista ──────────
+    let padTarget = 0;
+    if (tSecurity) {
+      const r = tSecurity.getBoundingClientRect();
+      const vhh = canvas.clientHeight || window.innerHeight;
+      padTarget = (r.bottom > vhh * 0.12 && r.top < vhh * 0.88) ? 1 : 0;
+      const vww = canvas.clientWidth || window.innerWidth;
+      padlock.position.set(vww < 768 ? 0 : 1.7, 0.15, 0);
+      padlock.scale.setScalar(vww < 768 ? 0.62 : 1.0);
+      padlock.rotation.y = Math.sin(clock.elapsedTime * 0.35) * 0.28;
+    }
+    const pk = 1 - Math.exp(-12 * dt);
+    padVis += (padTarget - padVis) * pk;
+    if (padTarget === 0 && padVis < 0.01) padVis = 0;
 
-    // Salta del tutto il render quando la palla è invisibile e ferma
-    // (tutte le sezioni tranne Applied AI / T4S Core): evita un intero
-    // pass WebGL a 60fps dove non si vede nulla → meno carico complessivo
-    // e scorrimento più fluido durante la discesa.
-    if (curVis < 0.002 && target.vis === 0) return;
+    // opacità del canvas = max(palla, lucchetto); toggle separati così non
+    // si mostrano insieme. La logica/fade della palla resta invariata.
+    orb.visible = curVis > 0.004;
+    padlock.visible = padVis > 0.004;
+    canvas.style.opacity = Math.max(curVis, padVis).toFixed(3);
+
+    // Salta il render solo se ENTRAMBI (palla e lucchetto) sono invisibili.
+    if (curVis < 0.002 && target.vis === 0 && padVis < 0.002) return;
 
     orb.rotation.y += dt * 0.16;
     orb.rotation.x += dt * 0.04;
