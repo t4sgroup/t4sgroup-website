@@ -80,6 +80,26 @@ function init() {
   });
   document.body.appendChild(appliedOverlay);
 
+  // ── Wash caldo UNIFORME per Applied AI / T4S Core su MOBILE ────────
+  // Su mobile il chip nativo è nascosto, quindi queste due sezioni
+  // perdevano il "bagno" caldo che le altre sezioni hanno dall'orb
+  // nativo: la palla restava un alone arancione isolato (la "macchia")
+  // su fondo scuro. Questo wash dà loro lo STESSO tono caldo uniforme
+  // delle altre sezioni → la palla si fonde nello sfondo, niente macchia.
+  // Solo mobile; la palla e ogni altra logica restano intatte.
+  const mobileWash = document.createElement('div');
+  mobileWash.id = 't4s-mobile-wash';
+  mobileWash.setAttribute('aria-hidden', 'true');
+  Object.assign(mobileWash.style, {
+    position: 'fixed', inset: '0', pointerEvents: 'none', zIndex: '1',
+    opacity: '0', transition: 'opacity 0.3s linear',
+    background:
+      'radial-gradient(135% 105% at 50% 12%, ' +
+      'rgba(98,52,22,0.60) 0%, rgba(64,35,17,0.46) 42%, ' +
+      'rgba(30,18,11,0.24) 75%, rgba(10,10,12,0) 100%)',
+  });
+  document.body.appendChild(mobileWash);
+
   // ── Canvas nativo (chip / sfera del bundle Next.js) ───────────────
   // Lo nascondiamo solo dove ci interessa: Applied AI (no chip) e T4S
   // Core (sotto al nostro overlay). Sulle altre sezioni resta intatto.
@@ -126,6 +146,7 @@ function init() {
     const themeMobile = window.matchMedia('(max-width:768px),(pointer:coarse)').matches;
     overlay.style.opacity = String(themeMobile ? 0 : cFade);
     appliedOverlay.style.opacity = String(themeMobile ? 0 : aFade);
+    mobileWash.style.opacity = String(themeMobile ? Math.max(aFade, cFade) : 0);
     if (bgWrapper) {
       // Chip nativo (canvas r3f di sfondo) nascosto su Applied AI + T4S
       // Core: su queste due sezioni vogliamo vedere SOLO la palla
