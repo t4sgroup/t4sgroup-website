@@ -182,8 +182,11 @@ function init() {
   const HALF_H = Math.tan((38 * Math.PI) / 360) * 5; // ≈ 1.72
 
   function resize() {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
+    // altezza/larghezza STABILI del canvas (bloccate via CSS a 100lvh su
+    // mobile): così la barra del browser che appare/scompare durante lo
+    // scroll non ridimensiona il canvas → niente "gonfiore".
+    const w = canvas.clientWidth || window.innerWidth;
+    const h = canvas.clientHeight || window.innerHeight;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
@@ -352,8 +355,8 @@ function init() {
     const traj = getTrajectory(
       tCore.getBoundingClientRect(),
       tApplied.getBoundingClientRect(),
-      window.innerWidth,
-      window.innerHeight
+      canvas.clientWidth || window.innerWidth,
+      canvas.clientHeight || window.innerHeight
     );
     target.x = traj.x;
     target.y = traj.y;
