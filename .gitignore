@@ -1,1 +1,9 @@
 _backup-prebrand/
+
+# File di sistema / locali (non vanno pubblicati)
+.DS_Store
+Screenshot*.png
+
+# Strumenti locali di lavoro (restano solo sul tuo computer)
+pubblica.sh
+GUIDA-SITO.md
