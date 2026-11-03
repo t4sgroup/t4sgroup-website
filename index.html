@@ -159,8 +159,8 @@ main, footer { overflow-x: clip; }
 .filo-on .nodo .punto { background: #141110; border-color: rgba(255,255,255,.25); }
 .filo-on .nodo .testo { transform: translateY(8px); } .filo-on .nodo b { color: rgba(255,255,255,.3); } .filo-on .nodo p { color: rgba(255,255,255,.2); }
 .filo-on .nodo.accesa .punto { background: #e2641b; border-color: rgba(255,205,155,.9); box-shadow: 0 0 22px 6px rgba(226,100,27,.45); }
-.filo-on .filo-luce { display: block; top: 20px; width: 2.5px; margin-left: -1.25px; height: var(--h, 0px); border-radius: 2px; background: linear-gradient(rgba(226,100,27,0), #e2641b 60px); box-shadow: 0 0 10px rgba(226,100,27,.9), 0 0 28px rgba(226,100,27,.5); }
-.filo-on .filo-testa { display: block; top: calc(20px + var(--h, 0px)); width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #fff3e0; box-shadow: 0 0 12px 2px #f69a4c, 0 0 36px rgba(226,100,27,.7); }
+.filo-on .filo-luce { display: block; top: 20px; width: 2.5px; margin-left: -1.25px; height: calc(100% - 60px); transform: scaleY(var(--k, 0)); transform-origin: 50% 0; will-change: transform; border-radius: 2px; background: linear-gradient(rgba(226,100,27,0), #e2641b 60px); box-shadow: 0 0 10px rgba(226,100,27,.9), 0 0 28px rgba(226,100,27,.5); }
+.filo-on .filo-testa { display: block; top: 20px; transform: translateY(var(--h, 0px)); will-change: transform; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #fff3e0; box-shadow: 0 0 12px 2px #f69a4c, 0 0 36px rgba(226,100,27,.7); }
 .filo-on .nodo.accesa .punto::after { content: ""; position: absolute; inset: -2px; border-radius: 50%; border: 2px solid #e2641b; animation: pc-onda 1s ease-out forwards; }
 .filo-on .nodo.accesa .testo { transform: none; } .filo-on .nodo.accesa b { color: #fff; } .filo-on .nodo.accesa p { color: rgba(255,255,255,.65); }
 /* i sei passi (frame Figma "Passi"): una curva a serpente che attraversa le tappe. Scorrendo, una scia di luce
@@ -178,7 +178,9 @@ main, footer { overflow-x: clip; }
 .passi-on .pc-svg { display: block; position: absolute; inset: 0; overflow: visible; }
 .pc-svg path { fill: none; stroke-linecap: round; }
 .pc-pista { stroke: rgba(255,255,255,.12); stroke-width: 1.5; } .pc-luce { stroke: #e2641b; stroke-width: 2.5; } .pc-alone { stroke: #e2641b; stroke-width: 9; opacity: .55; }
-.pc-testa { fill: #fff3e0; filter: drop-shadow(0 0 5px #f69a4c) drop-shadow(0 0 16px rgba(226,100,27,.9)); }
+.pc-testa { fill: #fff3e0; } .pc-testa-alone { fill: url(#pc-testa-sfuma); }
+.passi-on .pc-svg { will-change: transform; }
+@media (max-width: 860px), (hover: none) { .pc-alone { filter: none; stroke-width: 8; opacity: .28; } }
 .passi-on .tappa { position: absolute; width: 0; height: 0; }
 .passi-on .tappa .punto { display: block; position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; border-radius: 50%; background: #141110; border: 1.5px solid rgba(255,255,255,.25); transition: background .5s, border-color .5s, box-shadow .6s; }
 .passi-on .tappa .testo { position: absolute; left: -7px; width: var(--tw, 250px); transform: translateY(8px); transition: transform .7s cubic-bezier(.2,.7,.2,1); }
@@ -310,16 +312,17 @@ main, footer { overflow-x: clip; }
 .cta-sub { margin-top: 16px; width: min(540px, 100% - 40px); color: rgba(255,255,255,.7); font-size: 18px; line-height: 28px; }
 .cta-card .small { margin-top: 20px; font-size: 14px; line-height: 22px; } .cta-card .small a { color: rgba(255,255,255,.75); transition: color .2s; } .cta-card .small a:hover { color: #fff; }
 .cta-card { height: auto; padding: 54px 0; }
-.modulo, .grazie { margin-top: 30px; width: min(860px, 100% - 80px); padding: 40px; border-radius: 16px; text-align: left; background: linear-gradient(180deg, rgba(20,18,22,.55), rgba(10,10,12,.45)); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
-.modulo h3, .grazie b { display: block; text-align: center; font-weight: 500; font-size: 23px; line-height: 32px; letter-spacing: -.015em; }
-.modulo .campi { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; } .modulo .largo { grid-column: 1 / -1; }
-.modulo label { display: block; margin-bottom: 8px; font-size: 11.5px; line-height: 17px; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.55); }
-.modulo input { display: block; width: 100%; height: 48px; padding: 0 16px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; outline: none; color: #fff; font: 400 15px/22px Inter, sans-serif; transition: border-color .2s, background .2s; }
-.modulo input:focus { border-color: rgba(255,255,255,.3); background: rgba(255,255,255,.05); }
-.modulo .nota { margin-top: 24px; text-align: center; font-size: 12.5px; line-height: 19px; color: rgba(255,255,255,.45); }
-.modulo .invia { display: flex; align-items: center; gap: 12px; margin: 28px auto 0; padding: 14px 32px; border: 0; border-radius: 999px; cursor: pointer; font: 500 15px/22px Inter, sans-serif; color: #fff; background: linear-gradient(135deg, rgba(226,100,27,.95), rgba(110,52,14,.95)); box-shadow: 0 12px 40px -8px rgba(226,100,27,.55), inset 0 1px 0 rgba(255,255,255,.22); transition: transform .2s; }
-.modulo .invia:hover { transform: scale(1.02); }
-.grazie p { margin-top: 8px; text-align: center; font-size: 16px; line-height: 26px; color: rgba(255,255,255,.7); }
+.modulo, .grazie { margin-top: 30px; width: min(720px, 100% - 40px); padding: 6px; border: 1px solid var(--line); border-radius: 14px; text-align: left; }
+.modulo-in { padding: 26px; border: 1px solid rgba(255,255,255,.1); border-radius: 10px; background: rgba(12,10,9,.82); }
+.modulo h3, .grazie b { display: block; text-align: center; font-weight: 500; font-size: 20px; line-height: 31px; }
+.modulo .campi { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 12px; } .modulo .largo { grid-column: 1 / -1; }
+.modulo label { display: block; margin-bottom: 6px; font-size: 13px; line-height: 20px; color: rgba(255,255,255,.6); }
+.modulo input { display: block; width: 100%; height: 44px; padding: 0 14px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); border-radius: 8px; outline: none; color: #fff; font: 400 15px/24px Inter, sans-serif; transition: border-color .2s, background .2s; }
+.modulo input:hover { border-color: rgba(255,255,255,.2); } .modulo input:focus { border-color: rgba(255,255,255,.45); background: rgba(255,255,255,.06); }
+.modulo .invio { margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.modulo .nota { font-size: 13px; line-height: 20px; color: var(--fg-50); }
+.modulo .btn-white { flex: none; padding: 5px 18px; border: 0; cursor: pointer; font-family: inherit; }
+.grazie .modulo-in { padding: 34px 26px; text-align: center; } .grazie p { margin-top: 6px; font-size: 16px; line-height: 26px; color: rgba(255,255,255,.7); }
 .modulo[hidden], .grazie[hidden] { display: none; }
 .small { margin-top: 26px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; color: var(--fg-50); font-size: 16px; line-height: 26px; }
 
@@ -729,7 +732,8 @@ footer { border-top: 1px solid var(--line); }
   .ruoli li { grid-template-columns: 1fr; gap: 4px; padding: 16px 0; }
   .cta { padding-bottom: 40px; } .cta-card .h2 { font-size: 34px; line-height: 40px; } .cta-sub { font-size: 16px; line-height: 25px; }
   .cta-card { padding: 44px 0; }
-  .modulo, .grazie { width: calc(100% - 20px); padding: 32px; } .modulo .campi { grid-template-columns: 1fr; }
+  .modulo, .grazie { width: calc(100% - 20px); } .modulo-in { padding: 22px 16px; } .grazie .modulo-in { padding: 30px 16px; } .modulo .campi { margin-top: 26px; gap: 12px; }
+  .modulo .invio { margin-top: 12px; flex-direction: column; align-items: stretch; gap: 12px; text-align: center; } .modulo .invio .btn-white { justify-content: center; }
   .foot { flex-direction: column; padding: 41px 0 50px; }
   .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px 30px; }
   .marchio { flex-direction: row; align-items: center; gap: 40px; }
@@ -873,7 +877,7 @@ footer { border-top: 1px solid var(--line); }
     <div class="passi-palco">
       <div class="passi-binario">
         <div class="percorso">
-          <svg class="pc-svg" aria-hidden="true"><defs><filter id="pc-bagliore" x="-10%" y="-60%" width="120%" height="220%"><feGaussianBlur stdDeviation="7"/></filter></defs><path class="pc-pista"/><path class="pc-acceso pc-alone" filter="url(#pc-bagliore)"/><path class="pc-acceso pc-luce"/><circle class="pc-testa" r="5"/></svg>
+          <svg class="pc-svg" aria-hidden="true"><defs><radialGradient id="pc-testa-sfuma"><stop offset="0" stop-color="#f69a4c" stop-opacity=".95"/><stop offset=".3" stop-color="#e2641b" stop-opacity=".55"/><stop offset="1" stop-color="#e2641b" stop-opacity="0"/></radialGradient><filter id="pc-bagliore" x="-10%" y="-60%" width="120%" height="220%"><feGaussianBlur stdDeviation="7"/></filter></defs><path class="pc-pista"/><path class="pc-acceso pc-alone" filter="url(#pc-bagliore)"/><path class="pc-acceso pc-luce"/><circle class="pc-testa pc-testa-alone" r="20" fill="url(#pc-testa-sfuma)"/><circle class="pc-testa" r="5"/></svg>
         <div class="tappa su"><i class="punto"></i><div class="testo"><b>Contatti dal sito al CRM</b><p>Ogni richiesta va subito al commerciale giusto.</p></div></div>
         <div class="tappa giu"><i class="punto"></i><div class="testo"><b>Offerte e contratti</b><p>Offerta dal CRM, firma online.</p></div></div>
         <div class="tappa su"><i class="punto"></i><div class="testo"><b>Fatture in Bexio</b><p>Senza ricopiare i dati a mano.</p></div></div>
@@ -1018,6 +1022,7 @@ footer { border-top: 1px solid var(--line); }
     <p class="cta-sub">Un primo incontro con uno dei soci, senza impegno: capiamo come lavorate e vi diciamo cosa conviene fare.</p>
     <form class="modulo" action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&amp;orgId=00Dbk000002apin" method="POST">
       <input type="hidden" name="oid" value="00Dbk000002apin"><input type="hidden" name="retURL" value="https://www.t4sgroup.com/?lead=ok#contatti"><input type="hidden" name="lead_source" value="Web">
+      <div class="modulo-in">
       <h3>Richiedi una consulenza</h3>
       <div class="campi">
         <div><label for="f-nome">Nome</label><input id="f-nome" type="text" name="first_name" maxlength="40" required autocomplete="given-name"></div>
@@ -1027,10 +1032,10 @@ footer { border-top: 1px solid var(--line); }
         <div><label for="f-citta">Città</label><input id="f-citta" type="text" name="city" maxlength="40" autocomplete="address-level2"></div>
         <div><label for="f-cantone">Cantone / Regione</label><input id="f-cantone" type="text" name="state" maxlength="20" autocomplete="address-level1"></div>
       </div>
-      <p class="nota">Inviando i dati accetti che ti ricontattiamo per la consulenza.</p>
-      <button class="invia" type="submit">Invia richiesta <span aria-hidden="true">→</span></button>
+      <div class="invio"><p class="nota">Inviando i dati accetti che ti ricontattiamo per la consulenza.</p><button class="btn-white" type="submit">Invia richiesta</button></div>
+      </div>
     </form>
-    <div class="grazie" role="status" hidden><b>Grazie, abbiamo ricevuto la richiesta.</b><p>Uno dei soci vi scrive a breve per fissare il primo incontro.</p></div>
+    <div class="grazie" role="status" hidden><div class="modulo-in"><b>Grazie, abbiamo ricevuto la richiesta.</b><p>Uno dei soci vi scrive a breve per fissare il primo incontro.</p></div></div>
   </div>
 </section>
 </main>
@@ -1318,7 +1323,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
   var mossi = [], giroMoto = 0;
   MOTO.forEach(function (m, g) {
     var els = [].slice.call(document.querySelectorAll(m[0]));
-    els.forEach(function (el, i) { mossi.push({ el: el, tipo: m[1], da: m[2], a: m[3], g: g, i: i, n: els.length, e: 1, ora: 1 }); });
+    els.forEach(function (el, i) { el.style.willChange = 'transform, opacity'; mossi.push({ el: el, tipo: m[1], da: m[2], a: m[3], g: g, i: i, n: els.length, e: 1, ora: 1 }); });
   });
   function misuraMoto() {
     mossi.forEach(function (o) { o.el.style.transform = ''; o.el.style.opacity = ''; });
@@ -1352,7 +1357,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
   if (passi) {
     document.documentElement.classList.add('passi-on');
     var pPalco = passi.querySelector('.passi-palco'), pBin = passi.querySelector('.passi-binario'), perc = passi.querySelector('.percorso'), svg = perc.querySelector('.pc-svg');
-    var tracce = [].slice.call(svg.querySelectorAll('path')), accesi = [].slice.call(svg.querySelectorAll('.pc-acceso')), pTesta = svg.querySelector('.pc-testa');
+    var tracce = [].slice.call(svg.querySelectorAll('path')), accesi = [].slice.call(svg.querySelectorAll('.pc-acceso')), teste = [].slice.call(svg.querySelectorAll('.pc-testa'));
     var tappe = [].slice.call(perc.querySelectorAll('.tappa')), geo = null, pLento = 1.5, pCorsa = 0, pOra = 0, pMeta = 0, pGiro = 0;
     // il canale: tappe alternate in alto e in basso, unite da curve morbide (misure del frame Figma per ogni schermo),
     // campionato ogni 4 px tenendo la lunghezza percorsa a ogni campione
@@ -1381,7 +1386,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
       var p = pCorsa ? pOra / pCorsa : 0, xT = nd[0][0] + p * (geo.W - nd[0][0]), k = Math.min(geo.lun.length - 2, Math.floor(xT / 4));
       var lunT = geo.lun[k] + (geo.lun[k + 1] - geo.lun[k]) * (xT / 4 - k);
       accesi.forEach(function (pp) { pp.style.strokeDasharray = lunT.toFixed(1) + ' ' + Math.ceil(geo.lun[geo.lun.length - 1] + 40); });
-      pTesta.setAttribute('cx', xT.toFixed(1)); pTesta.setAttribute('cy', rigaPassi(xT).toFixed(1));
+      var yT = rigaPassi(xT).toFixed(1); teste.forEach(function (c) { c.setAttribute('cx', xT.toFixed(1)); c.setAttribute('cy', yT); });
       tappe.forEach(function (t, i) { t.classList.toggle('accesa', nd[i][0] <= xT + .5); });
     };
     var passoPassi = function () { pOra += (pMeta - pOra) * .25; if (Math.abs(pMeta - pOra) < .5) { pOra = pMeta; pGiro = 0; } else pGiro = requestAnimationFrame(passoPassi); disegnaPassi(); };
@@ -1395,7 +1400,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
     document.documentElement.classList.add('filo-on');
     var fNodi = [].slice.call(filo.querySelectorAll('.nodo')), fOra = 0, fMeta = 0, fGiro = 0;
     var fBersaglio = function () { var r = filo.getBoundingClientRect(), fondo = filo.clientHeight - 60; fMeta = Math.min(fondo, Math.max(0, innerHeight * .62 - r.top - 20)); };
-    var fDisegna = function () { filo.style.setProperty('--h', fOra.toFixed(1) + 'px'); fNodi.forEach(function (nd) { nd.classList.toggle('accesa', nd.offsetTop <= fOra + 1); }); };
+    var fDisegna = function () { filo.style.setProperty('--h', fOra.toFixed(1) + 'px'); filo.style.setProperty('--k', (fOra / Math.max(1, filo.clientHeight - 60)).toFixed(4)); fNodi.forEach(function (nd) { nd.classList.toggle('accesa', nd.offsetTop <= fOra + 1); }); };
     var fPasso = function () { fOra += (fMeta - fOra) * .12; if (Math.abs(fMeta - fOra) < .5) { fOra = fMeta; fGiro = 0; } else fGiro = requestAnimationFrame(fPasso); fDisegna(); };
     addEventListener('scroll', function () { fBersaglio(); if (!fGiro) fGiro = requestAnimationFrame(fPasso); }, { passive: true });
     fBersaglio(); fOra = fMeta; fDisegna(); addEventListener('resize', function () { fBersaglio(); fDisegna(); });
