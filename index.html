@@ -179,7 +179,6 @@ main, footer { overflow-x: clip; }
 .pc-svg path { fill: none; stroke-linecap: round; }
 .pc-pista { stroke: rgba(255,255,255,.12); stroke-width: 1.5; } .pc-luce { stroke: #e2641b; stroke-width: 2.5; } .pc-alone { stroke: #e2641b; stroke-width: 9; opacity: .55; }
 .pc-testa { fill: #fff3e0; } .pc-testa-alone { fill: url(#pc-testa-sfuma); }
-.passi-on .pc-svg { will-change: transform; }
 @media (max-width: 860px), (hover: none) { .pc-alone { filter: none; stroke-width: 8; opacity: .28; } }
 .passi-on .tappa { position: absolute; width: 0; height: 0; }
 .passi-on .tappa .punto { display: block; position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; border-radius: 50%; background: #141110; border: 1.5px solid rgba(255,255,255,.25); transition: background .5s, border-color .5s, box-shadow .6s; }
@@ -1393,12 +1392,12 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
     misuraPassi(); addEventListener('resize', misuraPassi); addEventListener('load', misuraPassi);
   }
   // CRM SU MISURA, COME LAVORIAMO: la luce scende lungo la linea seguendo lo scorrimento (la pagina non si ferma) e
-  // accende ogni punto quando lo raggiunge, cioè quando il punto arriva poco sotto la metà dello schermo.
+  // accende ogni punto quando lo raggiunge, cioè quando il punto arriva poco sotto la metà dello schermo (sul telefono al 40%).
   var filo = document.querySelector('.filo');
   if (filo) {
     document.documentElement.classList.add('filo-on');
     var fNodi = [].slice.call(filo.querySelectorAll('.nodo')), fOra = 0, fMeta = 0, fGiro = 0;
-    var fBersaglio = function () { var r = filo.getBoundingClientRect(), fondo = filo.clientHeight - 60; fMeta = Math.min(fondo, Math.max(0, innerHeight * .62 - r.top - 20)); };
+    var fBersaglio = function () { var r = filo.getBoundingClientRect(), fondo = filo.clientHeight - 60; fMeta = Math.min(fondo, Math.max(0, innerHeight * (innerWidth <= 560 ? .4 : .62) - r.top - 20)); };
     var fDisegna = function () { filo.style.setProperty('--h', fOra.toFixed(1) + 'px'); filo.style.setProperty('--k', (fOra / Math.max(1, filo.clientHeight - 60)).toFixed(4)); fNodi.forEach(function (nd) { nd.classList.toggle('accesa', nd.offsetTop <= fOra + 1); }); };
     var fPasso = function () { fOra += (fMeta - fOra) * .12; if (Math.abs(fMeta - fOra) < .5) { fOra = fMeta; fGiro = 0; } else fGiro = requestAnimationFrame(fPasso); fDisegna(); };
     addEventListener('scroll', function () { fBersaglio(); if (!fGiro) fGiro = requestAnimationFrame(fPasso); }, { passive: true });
