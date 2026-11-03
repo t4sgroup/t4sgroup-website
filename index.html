@@ -289,6 +289,7 @@ main, footer { overflow-x: clip; }
 .squadra { width: min(990px, 100%); margin: 40px auto 0; display: grid; grid-template-columns: 380px 1fr; gap: 50px; text-align: left; }
 .citazione { position: relative; overflow: hidden; margin: 0; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; border-radius: 20px; border: 1px solid rgba(255,255,255,.1); background: linear-gradient(#21140c, #000); }
 .citazione::before { content: ""; position: absolute; left: -70px; top: -90px; width: 260px; height: 200px; border-radius: 50%; background: rgba(226,100,27,.45); filter: blur(90px); }
+@media (hover: none) { .citazione::before { left: -200px; top: -220px; width: 520px; height: 460px; filter: none; background: radial-gradient(closest-side, rgba(226,100,27,.42), rgba(226,100,27,0)); } }
 .citazione > * { position: relative; }
 .citazione blockquote { margin: 0; font-weight: 500; font-size: 23px; line-height: 34px; }
 .citazione figcaption { font-size: 16px; line-height: 26px; }
@@ -1215,6 +1216,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
       v.target.style.setProperty('--dir', r.top < 0 ? -1 : 1); v.target.classList.toggle('in', v.isIntersecting);
     });
   }, { threshold: 0, rootMargin: '0px 0px -12% 0px' });
+  var tocco = matchMedia('(hover: none)').matches;
   PIANO.forEach(function (p) {
     document.querySelectorAll(p[0]).forEach(function (el, i) {
       el.dataset.a = p[1];
@@ -1235,6 +1237,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
           });
         })(el);
       }
+      if (tocco && el.closest('.serpente')) { el.classList.add('in'); return; }   // sul telefono Core e team restano fermi: scorrono e basta
       if (!el.closest('.hero')) vedi.observe(el);   // l'hero parte da solo all'apertura (sotto), una volta
     });
   });
@@ -1366,7 +1369,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
   if (passi) {
     document.documentElement.classList.add('passi-on');
     var pPalco = passi.querySelector('.passi-palco'), pBin = passi.querySelector('.passi-binario'), perc = passi.querySelector('.percorso'), svg = perc.querySelector('.pc-svg');
-    var tracce = [].slice.call(svg.querySelectorAll('path')), accesi = [].slice.call(svg.querySelectorAll('.pc-acceso')), teste = [].slice.call(svg.querySelectorAll('.pc-testa'));
+    var pista = svg.querySelector('.pc-pista'), accesi = [].slice.call(svg.querySelectorAll('.pc-acceso')), teste = [].slice.call(svg.querySelectorAll('.pc-testa'));
     var tappe = [].slice.call(perc.querySelectorAll('.tappa')), geo = null, pLento = 1.5, pCorsa = 0, pOra = 0, pMeta = 0, pGiro = 0;
     // il canale: tappe alternate in alto e in basso, unite da curve morbide (misure del frame Figma per ogni schermo),
     // campionato ogni 4 px tenendo la lunghezza percorsa a ogni campione
@@ -1377,10 +1380,10 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
       perc.style.width = W + 'px'; perc.style.height = H + 'px'; perc.style.setProperty('--tw', tw + 'px');
       svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H); svg.setAttribute('width', W); svg.setAttribute('height', H);
       tappe.forEach(function (t, i) { t.style.left = geo.nodi[i][0] + 'px'; t.style.top = geo.nodi[i][1] + 'px'; });
-      var d = '', lun = 0, py = 0; geo.lun = [];
-      for (var x = 0; x <= W; x += 4) { var y = rigaPassi(x); if (x) lun += Math.sqrt(16 + (y - py) * (y - py)); geo.lun.push(lun); d += (x ? ' L' : 'M') + x + ' ' + y.toFixed(1); py = y; }
-      tracce.forEach(function (pp) { pp.setAttribute('d', d); }); accesi.forEach(function (pp) { pp.style.strokeDasharray = '0 ' + Math.ceil(lun + 40); });
-      pCorsa = Math.max(0, pBin.scrollWidth - innerWidth); passi.style.height = (innerHeight + pCorsa * pLento) + 'px'; pPalco.style.height = innerHeight + 'px';
+      geo.punti = []; for (var x = 0; x <= W; x += 4) geo.punti.push(x + ' ' + rigaPassi(x).toFixed(1));
+      pista.setAttribute('d', 'M' + geo.punti.join(' L'));
+      geo.tel = innerWidth <= 860; geo.cursore = Math.round(innerWidth * .35); geo.margine = parseFloat(getComputedStyle(pBin).paddingLeft) || 0;
+      pCorsa = geo.tel ? W - geo.nodi[0][0] : Math.max(0, pBin.scrollWidth - innerWidth); passi.style.height = (innerHeight + pCorsa * pLento) + 'px'; pPalco.style.height = innerHeight + 'px';
       metaPassi(); pOra = pMeta; disegnaPassi(); misuraMoto();
     };
     var rigaPassi = function (x) {
@@ -1390,12 +1393,14 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
     var metaPassi = function () { pMeta = Math.min(pCorsa, Math.max(0, -passi.getBoundingClientRect().top / pLento)); };
     var disegnaPassi = function () {
       var nd = geo.nodi, n = nd.length;
-      pBin.style.transform = 'translate3d(' + (-pOra).toFixed(1) + 'px,0,0)';
+      var xT = geo.tel ? nd[0][0] + pOra : 0, sposta = geo.tel ? geo.cursore - geo.margine - Math.min(xT, nd[n - 1][0]) : -pOra;
+      pBin.style.transform = 'translate3d(' + sposta.toFixed(1) + 'px,0,0)';
       // la luce va dalla prima tappa (inizio) fino in fondo alla curva (fine della corsa) e accende ogni tappa che raggiunge
-      var p = pCorsa ? pOra / pCorsa : 0, xT = nd[0][0] + p * (geo.W - nd[0][0]), k = Math.min(geo.lun.length - 2, Math.floor(xT / 4));
-      var lunT = geo.lun[k] + (geo.lun[k + 1] - geo.lun[k]) * (xT / 4 - k);
-      accesi.forEach(function (pp) { pp.style.strokeDasharray = lunT.toFixed(1) + ' ' + Math.ceil(geo.lun[geo.lun.length - 1] + 40); });
-      var yT = rigaPassi(xT).toFixed(1); teste.forEach(function (c) { c.setAttribute('cx', xT.toFixed(1)); c.setAttribute('cy', yT); });
+      var p = pCorsa ? pOra / pCorsa : 0; if (!geo.tel) xT = nd[0][0] + p * (geo.W - nd[0][0]); var k = Math.min(geo.punti.length - 1, Math.floor(xT / 4)), yT = rigaPassi(xT).toFixed(1);
+      // la parte accesa è una linea a sé che arriva fino alla testa: con il tratteggio Safari lasciava accesi pezzi già passati
+      var dA = 'M' + geo.punti.slice(0, k + 1).join(' L') + ' L' + xT.toFixed(1) + ' ' + yT;
+      accesi.forEach(function (pp) { pp.setAttribute('d', dA); });
+      teste.forEach(function (c) { c.setAttribute('cx', xT.toFixed(1)); c.setAttribute('cy', yT); });
       tappe.forEach(function (t, i) { t.classList.toggle('accesa', nd[i][0] <= xT + .5); });
     };
     var passoPassi = function () { pOra += (pMeta - pOra) * .25; if (Math.abs(pMeta - pOra) < .5) { pOra = pMeta; pGiro = 0; } else pGiro = requestAnimationFrame(passoPassi); disegnaPassi(); };
