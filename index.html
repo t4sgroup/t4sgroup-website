@@ -276,7 +276,7 @@ main, footer { overflow-x: clip; }
 
 /* TEAM */
 .team { padding: 78px 0; text-align: center; }
-/* dal T4S Core al team: il palco resta fermo, la pagina va a destra come verso un'altra pagina e poi scende */
+/* dal T4S Core al team: il palco si ferma in fondo al Core, la pagina va a destra verso il team e poi scende */
 .serpente { overflow-x: clip; }
 .serpente-on .serpente { position: relative; }
 .serpente-on .serpente-palco { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #000; }
@@ -718,6 +718,7 @@ footer { border-top: 1px solid var(--line); }
   .piattaforme { left: 20px; right: 20px; } .piattaforme .nomi { gap: 12px 26px; } .piattaforme .nomi span { font-size: 18px; }
   .bento h2 { font-size: 26px; line-height: 38px; }
   .card .txt { left: 28px; bottom: 28px; right: 28px; width: auto; }
+  .card .shot { left: 18px; top: 18px; transform-origin: 0 0; } .card .shot[data-dash] { transform: scale(.42); -webkit-mask-image: linear-gradient(#000 330px, transparent 480px); mask-image: linear-gradient(#000 330px, transparent 480px); } .card .shot.traffic { transform: scale(.52); }   /* la dashboard e il grafico rimpiccioliti nella card stretta */
   .core .h2, .team .h2 { font-size: 26px; line-height: 34px; }
   .saas { gap: 40px; } .saas-demo { margin-top: 0; }
   .tabs span:not(.on) { display: none; } .saas-head h2 { font-size: 26px; line-height: 34px; }
@@ -1256,13 +1257,14 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
     var H = innerHeight;
     carte.forEach(function (c) {
       var fila = c.parentNode, alto = fila.getBoundingClientRect().top + c.offsetTop - fila.offsetTop;
-      var arrivo = Math.min(1, Math.max(0, (alto - H * .5) / (H * .4)));
-      var via = Math.min(1, Math.max(0, c.closest('.r-bento-2') ? ora * 2 : ora * 2 - 1));
+      var tel = innerWidth <= 860, arrivo = tel ? Math.min(1, Math.max(0, (alto - H * .72) / (H * .22))) : Math.min(1, Math.max(0, (alto - H * .5) / (H * .4)));
+      var via = tel ? 0 : Math.min(1, Math.max(0, c.closest('.r-bento-2') ? ora * 2 : ora * 2 - 1));   // sul telefono una card per riga: arrivano presto e restano
       var e = Math.max(arrivo, via), lato = c === fila.firstElementChild ? -1 : 1;
       e = 1 - Math.pow(1 - e, 2);
-      c.style.transform = 'perspective(1000px) translate(' + (lato * e * 240).toFixed(1) + 'px,' + (e * 90).toFixed(1) + 'px) rotate(' + (lato * e * 9).toFixed(2) + 'deg)' +
-        ' rotateY(' + (-lato * e * 22 + c._hx).toFixed(2) + 'deg) rotateX(' + c._hy.toFixed(2) + 'deg) scale(' + (1 - e * .12).toFixed(3) + ')';
-      c.style.opacity = (1 - e * .85).toFixed(3);
+      var k = tel ? .25 : 1;
+      c.style.transform = 'perspective(1000px) translate(' + (lato * e * 240 * k).toFixed(1) + 'px,' + (e * 90 * (tel ? .6 : 1)).toFixed(1) + 'px) rotate(' + (lato * e * 9 * k).toFixed(2) + 'deg)' +
+        ' rotateY(' + (-lato * e * 22 * k + c._hx).toFixed(2) + 'deg) rotateX(' + c._hy.toFixed(2) + 'deg) scale(' + (1 - e * .12 * k).toFixed(3) + ')';
+      c.style.opacity = (1 - e * (tel ? .6 : .85)).toFixed(3);
     });
   }
   function passo() { ora += (meta - ora) * .2; if (Math.abs(meta - ora) > .002) giro = requestAnimationFrame(passo); else { ora = meta; giro = 0; } disegna(); }
@@ -1274,10 +1276,11 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
   }, { passive: true });
   addEventListener('resize', soloLarghezza(disegna));
   disegna();
-  // dal T4S Core al team, comandato dalla rotella. Arrivati in fondo al Core il palco resta fermo: scorrendo, la pagina
-  // va a destra come verso un'altra pagina: Core e team stanno sulla stessa linea, uno accanto all'altro, e scorrono
-  // di lato quanto scorri tu. Finito lo spostamento si scende nel team e si riprende a scorrere. Lo spostamento di lato
-  // segue la rotella da vicino, ammorbidito solo quanto basta per non andare a scatti. Vale su ogni schermo.
+  // dal T4S Core al team. Core e team scorrono da soli come il resto della pagina: lo script non li sposta in
+  // verticale (sul telefono andava a scatti, sempre un attimo dietro al dito). Il palco si ferma quando il fondo del Core
+  // arriva in fondo allo schermo (sticky con la cima negativa); lì, scorrendo, la pagina va a destra come verso un'altra
+  // pagina e arriva al team, che sta alla stessa altezza e parte dal suo inizio. Finito lo spostamento il palco riparte
+  // e il team scorre normalmente. Lo spostamento di lato segue lo scorrimento, ammorbidito solo per non andare a scatti.
   var serp = document.querySelector('.serpente'), palco = serp.querySelector('.serpente-palco');
   var pCore = serp.querySelector('.p-core'), pTeam = serp.querySelector('.p-team');
   var tratto = 950, misure = null, lato = 0, latoOra = 0, giroLato = 0;
@@ -1285,16 +1288,16 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
   function misura() {
     document.documentElement.classList.add('serpente-on');
     tratto = Math.round(Math.min(950, Math.max(560, innerWidth * .65)));
-    var H = innerHeight, a = Math.max(0, pCore.offsetHeight - H), b = a + tratto, c = b + Math.max(0, pTeam.offsetHeight - H);
-    misure = { H: H, W: palco.clientWidth, a: a, b: b, c: c };
-    serp.style.height = (H + c) + 'px'; palco.style.height = H + 'px';
+    var H = innerHeight, a = Math.max(0, pCore.offsetHeight - H), alto = a + Math.max(H, pTeam.offsetHeight);
+    misure = { H: H, W: palco.clientWidth, a: a, b: a + tratto };
+    pTeam.style.top = a + 'px'; palco.style.top = -a + 'px'; palco.style.height = alto + 'px'; serp.style.height = (alto + tratto) + 'px';
     latoOra = lato = Math.min(1, Math.max(0, (posizione() - a) / tratto)); disegnaPassaggio();
   }
-  function posizione() { return Math.min(misure.c, Math.max(0, -serp.getBoundingClientRect().top)); }
+  function posizione() { return -serp.getBoundingClientRect().top; }
   function disegnaPassaggio() {
-    var m = misure, s = posizione(), dx = liscio(latoOra), y = -Math.min(s, m.a);
-    pCore.style.transform = 'translate3d(' + (-dx * m.W).toFixed(1) + 'px,' + y + 'px,0)';
-    pTeam.style.transform = 'translate3d(' + ((1 - dx) * m.W).toFixed(1) + 'px,' + -Math.max(0, s - m.b) + 'px,0)';   // il team entra sempre dal suo inizio
+    var dx = liscio(latoOra), W = misure.W;
+    pCore.style.transform = 'translate3d(' + (-dx * W).toFixed(1) + 'px,0,0)';
+    pTeam.style.transform = 'translate3d(' + ((1 - dx) * W).toFixed(1) + 'px,0,0)';
   }
   function passoLato() {
     latoOra += (lato - latoOra) * .22;
@@ -1303,8 +1306,9 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
   }
   addEventListener('scroll', function () {
     if (!misure) return;
-    lato = Math.min(1, Math.max(0, (posizione() - misure.a) / tratto));
-    if (!giroLato) giroLato = requestAnimationFrame(passoLato);
+    var l = Math.min(1, Math.max(0, (posizione() - misure.a) / tratto));
+    if (l === lato) return;
+    lato = l; if (!giroLato) giroLato = requestAnimationFrame(passoLato);
   }, { passive: true });
   misura(); addEventListener('resize', soloLarghezza(misura)); addEventListener('load', misura);
   // i link a Core e team portano al punto giusto del percorso
@@ -1312,7 +1316,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
     l.addEventListener('click', function (e) {
       if (!misure) return;
       e.preventDefault();
-      scrollTo({ top: serp.getBoundingClientRect().top + scrollY + (l.getAttribute('href') === '#team' ? misure.b : 0), behavior: 'smooth' });
+      scrollTo({ top: serp.getBoundingClientRect().top + scrollY + (l.getAttribute('href') === '#team' ? misure.b : 0), behavior: 'smooth' });   // b = fine dello spostamento di lato
     });
   });
   // LE ALTRE SEZIONI, con lo stesso principio delle quattro aree: il movimento è legato alla posizione sullo schermo,
