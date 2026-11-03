@@ -312,8 +312,7 @@ main, footer { overflow-x: clip; }
 .cta-sub { margin-top: 16px; width: min(540px, 100% - 40px); color: rgba(255,255,255,.7); font-size: 18px; line-height: 28px; }
 .cta-card .small { margin-top: 20px; font-size: 14px; line-height: 22px; } .cta-card .small a { color: rgba(255,255,255,.75); transition: color .2s; } .cta-card .small a:hover { color: #fff; }
 .cta-card { height: auto; padding: 54px 0; }
-.modulo, .grazie { margin-top: 30px; width: min(720px, 100% - 40px); padding: 6px; border: 1px solid var(--line); border-radius: 14px; text-align: left; }
-.modulo-in { padding: 26px; border: 1px solid rgba(255,255,255,.1); border-radius: 10px; background: rgba(12,10,9,.82); }
+.modulo, .grazie { margin-top: 30px; width: min(720px, 100% - 40px); text-align: left; }
 .modulo h3, .grazie b { display: block; text-align: center; font-weight: 500; font-size: 20px; line-height: 31px; }
 .modulo .campi { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 12px; } .modulo .largo { grid-column: 1 / -1; }
 .modulo label { display: block; margin-bottom: 6px; font-size: 13px; line-height: 20px; color: rgba(255,255,255,.6); }
@@ -322,7 +321,7 @@ main, footer { overflow-x: clip; }
 .modulo .invio { margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .modulo .nota { font-size: 13px; line-height: 20px; color: var(--fg-50); }
 .modulo .btn-white { flex: none; padding: 5px 18px; border: 0; cursor: pointer; font-family: inherit; }
-.grazie .modulo-in { padding: 34px 26px; text-align: center; } .grazie p { margin-top: 6px; font-size: 16px; line-height: 26px; color: rgba(255,255,255,.7); }
+.grazie .modulo-in { text-align: center; } .grazie p { margin-top: 6px; font-size: 16px; line-height: 26px; color: rgba(255,255,255,.7); }
 .modulo[hidden], .grazie[hidden] { display: none; }
 .small { margin-top: 26px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; color: var(--fg-50); font-size: 16px; line-height: 26px; }
 
@@ -732,7 +731,7 @@ footer { border-top: 1px solid var(--line); }
   .ruoli li { grid-template-columns: 1fr; gap: 4px; padding: 16px 0; }
   .cta { padding-bottom: 40px; } .cta-card .h2 { font-size: 34px; line-height: 40px; } .cta-sub { font-size: 16px; line-height: 25px; }
   .cta-card { padding: 44px 0; }
-  .modulo, .grazie { width: calc(100% - 20px); } .modulo-in { padding: 22px 16px; } .grazie .modulo-in { padding: 30px 16px; } .modulo .campi { margin-top: 26px; gap: 12px; }
+  .modulo, .grazie { width: calc(100% - 20px); } .modulo .campi { margin-top: 26px; gap: 12px; }
   .modulo .invio { margin-top: 12px; flex-direction: column; align-items: stretch; gap: 12px; text-align: center; } .modulo .invio .btn-white { justify-content: center; }
   .foot { flex-direction: column; padding: 41px 0 50px; }
   .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px 30px; }
