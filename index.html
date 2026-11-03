@@ -1066,6 +1066,9 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 <script>
 // Sul telefono la barra del browser compare e sparisce mentre si scorre e cambia l'altezza della finestra:
 // le misure del sito si rifanno solo quando cambia la larghezza, altrimenti la pagina salta e si blocca.
+// Col dito (telefono, tablet) i movimenti legati allo scorrimento vanno alla posizione esatta a ogni fotogramma: l'inseguimento
+// morbido, bello con la rotella, col dito lento sembra un blocco. MORBIDO(k) vale k col mouse e 1 col dito.
+var DITO = matchMedia('(hover: none)').matches; function MORBIDO(k) { return DITO ? 1 : k; }
 function soloLarghezza(fn) { var w = innerWidth; return function () { if (innerWidth === w) return; w = innerWidth; fn(); }; }
 // Casi d'uso della dashboard: dati dimostrativi, uno per ogni tipo di cliente.
 var CASI = [
@@ -1248,7 +1251,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
   // dashboard dell'hero: si raddrizza mentre scorri
   var app = document.querySelector('.hero .app'), hero = document.querySelector('.hero');
   function inclina() { var p = Math.min(1, Math.max(0, scrollY / (hero.offsetHeight * .45))); app.style.setProperty('--tilt', (16 * (1 - p)).toFixed(2) + 'deg'); hero.style.setProperty('--p', p.toFixed(3)); }
-  if (app) { inclina(); addEventListener('scroll', function () { requestAnimationFrame(inclina); }, { passive: true }); }
+  if (app) { inclina(); var giroInclina = 0; addEventListener('scroll', function () { if (!giroInclina) giroInclina = requestAnimationFrame(function () { giroInclina = 0; inclina(); }); }, { passive: true }); }
   // card delle quattro aree, una fila alla volta. Scendendo arrivano seguendo la loro posizione: ogni fila entra mentre
   // sale dal fondo dello schermo a metà, quindi prima quella in alto e poi l'altra. Risalendo reagiscono al verso dello
   // scorrimento: se ne va subito la fila in basso (primi ~220 px) e poi quella in alto; riscendendo tornano.
@@ -1270,7 +1273,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
       c.style.opacity = (1 - e * (tel ? .6 : .85)).toFixed(3);
     });
   }
-  function passo() { ora += (meta - ora) * .2; if (Math.abs(meta - ora) > .002) giro = requestAnimationFrame(passo); else { ora = meta; giro = 0; } disegna(); }
+  function passo() { ora += (meta - ora) * MORBIDO(.2); if (Math.abs(meta - ora) > .002) giro = requestAnimationFrame(passo); else { ora = meta; giro = 0; } disegna(); }
   addEventListener('scroll', function () {
     var dy = scrollY - ultimaY; ultimaY = scrollY;
     if (sezione.getBoundingClientRect().top > innerHeight) meta = 0;
@@ -1303,7 +1306,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
     pTeam.style.transform = 'translate3d(' + ((1 - dx) * W).toFixed(1) + 'px,0,0)';
   }
   function passoLato() {
-    latoOra += (lato - latoOra) * .22;
+    latoOra += (lato - latoOra) * MORBIDO(.22);
     if (Math.abs(lato - latoOra) < .001) { latoOra = lato; giroLato = 0; } else giroLato = requestAnimationFrame(passoLato);
     disegnaPassaggio();
   }
@@ -1357,7 +1360,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
   }
   function passoMoto() {
     var fermi = true;
-    mossi.forEach(function (o) { o.ora += (o.e - o.ora) * .18; if (Math.abs(o.e - o.ora) < .001) o.ora = o.e; else fermi = false; });
+    mossi.forEach(function (o) { o.ora += (o.e - o.ora) * MORBIDO(.18); if (Math.abs(o.e - o.ora) < .001) o.ora = o.e; else fermi = false; });
     disegnaMoto(); giroMoto = fermi ? 0 : requestAnimationFrame(passoMoto);
   }
   addEventListener('scroll', function () { bersagliMoto(); if (!giroMoto) giroMoto = requestAnimationFrame(passoMoto); }, { passive: true });
@@ -1403,7 +1406,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
       teste.forEach(function (c) { c.setAttribute('cx', xT.toFixed(1)); c.setAttribute('cy', yT); });
       tappe.forEach(function (t, i) { t.classList.toggle('accesa', nd[i][0] <= xT + .5); });
     };
-    var passoPassi = function () { pOra += (pMeta - pOra) * .25; if (Math.abs(pMeta - pOra) < .5) { pOra = pMeta; pGiro = 0; } else pGiro = requestAnimationFrame(passoPassi); disegnaPassi(); };
+    var passoPassi = function () { pOra += (pMeta - pOra) * MORBIDO(.25); if (Math.abs(pMeta - pOra) < .5) { pOra = pMeta; pGiro = 0; } else pGiro = requestAnimationFrame(passoPassi); disegnaPassi(); };
     addEventListener('scroll', function () { metaPassi(); if (!pGiro) pGiro = requestAnimationFrame(passoPassi); }, { passive: true });
     misuraPassi(); addEventListener('resize', soloLarghezza(misuraPassi)); addEventListener('load', misuraPassi);
   }
@@ -1415,7 +1418,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
     var fNodi = [].slice.call(filo.querySelectorAll('.nodo')), fOra = 0, fMeta = 0, fGiro = 0;
     var fBersaglio = function () { var r = filo.getBoundingClientRect(), fondo = filo.clientHeight - 60; fMeta = Math.min(fondo, Math.max(0, innerHeight * (innerWidth <= 560 ? .4 : .62) - r.top - 20)); };
     var fDisegna = function () { filo.style.setProperty('--h', fOra.toFixed(1) + 'px'); filo.style.setProperty('--k', (fOra / Math.max(1, filo.clientHeight - 60)).toFixed(4)); fNodi.forEach(function (nd) { nd.classList.toggle('accesa', nd.offsetTop <= fOra + 1); }); };
-    var fPasso = function () { fOra += (fMeta - fOra) * .12; if (Math.abs(fMeta - fOra) < .5) { fOra = fMeta; fGiro = 0; } else fGiro = requestAnimationFrame(fPasso); fDisegna(); };
+    var fPasso = function () { fOra += (fMeta - fOra) * MORBIDO(.12); if (Math.abs(fMeta - fOra) < .5) { fOra = fMeta; fGiro = 0; } else fGiro = requestAnimationFrame(fPasso); fDisegna(); };
     addEventListener('scroll', function () { fBersaglio(); if (!fGiro) fGiro = requestAnimationFrame(fPasso); }, { passive: true });
     fBersaglio(); fOra = fMeta; fDisegna(); addEventListener('resize', soloLarghezza(function () { fBersaglio(); fDisegna(); }));
   }
@@ -1437,7 +1440,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
       else h.style.setProperty('--k', (k * k * (3 - 2 * k)).toFixed(3));
     });
   }
-  segniTitoli(); addEventListener('scroll', function () { requestAnimationFrame(segniTitoli); }, { passive: true }); addEventListener('resize', soloLarghezza(segniTitoli));
+  segniTitoli(); var giroSegni = 0; addEventListener('scroll', function () { if (!giroSegni) giroSegni = requestAnimationFrame(function () { giroSegni = 0; segniTitoli(); }); }, { passive: true }); addEventListener('resize', soloLarghezza(segniTitoli));
   if (matchMedia('(hover: hover)').matches) carte.forEach(function (c) {
     c.addEventListener('mousemove', function (e) { var r = c.getBoundingClientRect(); c._hx = ((e.clientX - r.left) / r.width - .5) * 7; c._hy = -((e.clientY - r.top) / r.height - .5) * 6; disegna(); });
     c.addEventListener('mouseleave', function () { c._hx = 0; c._hy = 0; disegna(); });
