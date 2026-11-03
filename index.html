@@ -1377,8 +1377,8 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
     var disegnaPassi = function () {
       var nd = geo.nodi, n = nd.length;
       pBin.style.transform = 'translate3d(' + (-pOra).toFixed(1) + 'px,0,0)';
-      // la luce va dalla prima tappa (inizio) all'ultima (fine della corsa) e accende ogni tappa che raggiunge
-      var p = pCorsa ? pOra / pCorsa : 0, xT = nd[0][0] + p * (nd[n - 1][0] - nd[0][0]), k = Math.min(geo.lun.length - 2, Math.floor(xT / 4));
+      // la luce va dalla prima tappa (inizio) fino in fondo alla curva (fine della corsa) e accende ogni tappa che raggiunge
+      var p = pCorsa ? pOra / pCorsa : 0, xT = nd[0][0] + p * (geo.W - nd[0][0]), k = Math.min(geo.lun.length - 2, Math.floor(xT / 4));
       var lunT = geo.lun[k] + (geo.lun[k + 1] - geo.lun[k]) * (xT / 4 - k);
       accesi.forEach(function (pp) { pp.style.strokeDasharray = lunT.toFixed(1) + ' ' + Math.ceil(geo.lun[geo.lun.length - 1] + 40); });
       pTesta.setAttribute('cx', xT.toFixed(1)); pTesta.setAttribute('cy', rigaPassi(xT).toFixed(1));
@@ -1394,7 +1394,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
   if (filo) {
     document.documentElement.classList.add('filo-on');
     var fNodi = [].slice.call(filo.querySelectorAll('.nodo')), fOra = 0, fMeta = 0, fGiro = 0;
-    var fBersaglio = function () { var r = filo.getBoundingClientRect(), fondo = fNodi[fNodi.length - 1].offsetTop; fMeta = Math.min(fondo, Math.max(0, innerHeight * .62 - r.top - 20)); };
+    var fBersaglio = function () { var r = filo.getBoundingClientRect(), fondo = filo.clientHeight - 60; fMeta = Math.min(fondo, Math.max(0, innerHeight * .62 - r.top - 20)); };
     var fDisegna = function () { filo.style.setProperty('--h', fOra.toFixed(1) + 'px'); fNodi.forEach(function (nd) { nd.classList.toggle('accesa', nd.offsetTop <= fOra + 1); }); };
     var fPasso = function () { fOra += (fMeta - fOra) * .12; if (Math.abs(fMeta - fOra) < .5) { fOra = fMeta; fGiro = 0; } else fGiro = requestAnimationFrame(fPasso); fDisegna(); };
     addEventListener('scroll', function () { fBersaglio(); if (!fGiro) fGiro = requestAnimationFrame(fPasso); }, { passive: true });
