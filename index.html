@@ -302,16 +302,14 @@ main, footer { overflow-x: clip; }
 
 /* CTA */
 .cta { padding: 16px 0 69px; }
-.cta-card { position: relative; height: 473px; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
-  background: #000 url(img/griglia-cta.png) center / 1100px 473px no-repeat; }
-.cta-card::before { content: ""; position: absolute; left: 50%; top: -342px; width: 686px; height: 622px; margin-left: -343px; border-radius: 50%; background: rgba(226,100,27,.49); filter: blur(152px); }
-.cta-card::after { content: ""; position: absolute; inset: 0; border-radius: 10px; border: 1px solid var(--line); background: linear-gradient(rgba(3,2,1,0), #030201); }
+.cta-card { position: relative; height: 473px; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 .cta-card > * { position: relative; z-index: 1; }
 .cta-card .h2 { width: min(640px, 100%); line-height: 62px; }
 .cta-sub { margin-top: 16px; width: min(540px, 100% - 40px); color: rgba(255,255,255,.7); font-size: 18px; line-height: 28px; }
 .cta-card .small { margin-top: 20px; font-size: 14px; line-height: 22px; } .cta-card .small a { color: rgba(255,255,255,.75); transition: color .2s; } .cta-card .small a:hover { color: #fff; }
 .cta-card { height: auto; padding: 54px 0; }
-.modulo, .grazie { margin-top: 30px; width: min(720px, 100% - 40px); text-align: left; }
+.modulo, .grazie { margin-top: 30px; width: min(720px, 100% - 40px); padding: 6px; border: 1px solid var(--line); border-radius: 14px; text-align: left; }
+.modulo-in { padding: 26px; border: 1px solid rgba(255,255,255,.1); border-radius: 10px; background: rgba(12,10,9,.82); }
 .modulo h3, .grazie b { display: block; text-align: center; font-weight: 500; font-size: 20px; line-height: 31px; }
 .modulo .campi { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 12px; } .modulo .largo { grid-column: 1 / -1; }
 .modulo label { display: block; margin-bottom: 6px; font-size: 13px; line-height: 20px; color: rgba(255,255,255,.6); }
@@ -320,7 +318,7 @@ main, footer { overflow-x: clip; }
 .modulo .invio { margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .modulo .nota { font-size: 13px; line-height: 20px; color: var(--fg-50); }
 .modulo .btn-white { flex: none; padding: 5px 18px; border: 0; cursor: pointer; font-family: inherit; }
-.grazie .modulo-in { text-align: center; } .grazie p { margin-top: 6px; font-size: 16px; line-height: 26px; color: rgba(255,255,255,.7); }
+.grazie .modulo-in { padding: 34px 26px; text-align: center; } .grazie p { margin-top: 6px; font-size: 16px; line-height: 26px; color: rgba(255,255,255,.7); }
 .modulo[hidden], .grazie[hidden] { display: none; }
 .small { margin-top: 26px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; color: var(--fg-50); font-size: 16px; line-height: 26px; }
 
@@ -633,6 +631,7 @@ footer { border-top: 1px solid var(--line); }
 .js-anim [data-a="faccia"] { transform-origin: 50% 100%; transition: transform 1.1s cubic-bezier(.25,1.3,.45,1) var(--d, 0s), opacity .5s ease var(--d, 0s); }
 .js-anim [data-a="faccia"]:not(.in) { transform: perspective(700px) translateY(12px) rotateX(-85deg); opacity: 0; }
 .js-anim [data-a="blur"]:not(.in) { filter: blur(14px); transform: translateX(-26px); }
+@media (hover: none) { .js-anim [data-a="blur"]:not(.in) { filter: none; opacity: 0; } }
 .js-anim [data-a="left"]:not(.in) { transform: translateX(-70px); }
 .js-anim [data-a="rise"]:not(.in) { transform: translateY(calc(var(--dir, 1) * 44px)); }
 .js-anim [data-a="pop"]:not(.in) { transform: scale(.82); }
@@ -730,13 +729,18 @@ footer { border-top: 1px solid var(--line); }
   .ruoli li { grid-template-columns: 1fr; gap: 4px; padding: 16px 0; }
   .cta { padding-bottom: 40px; } .cta-card .h2 { font-size: 34px; line-height: 40px; } .cta-sub { font-size: 16px; line-height: 25px; }
   .cta-card { padding: 44px 0; }
-  .modulo, .grazie { width: calc(100% - 20px); } .modulo .campi { margin-top: 26px; gap: 12px; }
+  .modulo, .grazie { width: calc(100% - 20px); } .modulo-in { padding: 22px 16px; } .grazie .modulo-in { padding: 30px 16px; } .modulo .campi { margin-top: 26px; gap: 12px; }
   .modulo .invio { margin-top: 12px; flex-direction: column; align-items: stretch; gap: 12px; text-align: center; } .modulo .invio .btn-white { justify-content: center; }
   .foot { flex-direction: column; padding: 41px 0 50px; }
   .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px 30px; }
   .marchio { flex-direction: row; align-items: center; gap: 40px; }
 }
 </style>
+<script>
+// Ricaricando la pagina si riparte dall'inizio: il browser non riporta dove eri e l'ancora (#contatti...) si toglie
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+(function () { var n = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null; if (n && n.type === 'reload' && location.hash) history.replaceState(null, '', location.pathname + location.search); })();
+</script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1058,6 +1062,9 @@ footer { border-top: 1px solid var(--line); }
 </footer>
 
 <script>
+// Sul telefono la barra del browser compare e sparisce mentre si scorre e cambia l'altezza della finestra:
+// le misure del sito si rifanno solo quando cambia la larghezza, altrimenti la pagina salta e si blocca.
+function soloLarghezza(fn) { var w = innerWidth; return function () { if (innerWidth === w) return; w = innerWidth; fn(); }; }
 // Casi d'uso della dashboard: dati dimostrativi, uno per ogni tipo di cliente.
 var CASI = [
   { nav: 'Studio legale', icon: 'doc', title: 'Caso d’uso: Studio legale, 25 persone', sub: 'Dalla richiesta al mandato',
@@ -1140,7 +1147,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
     // Sfumatura in fondo all'hero: su tablet e telefono la dashboard è più piccola, quindi anche la sfumatura,
     // altrimenti copre tutto il grafico (come su desktop deve coprirne solo la parte bassa).
   }
-  fit(); addEventListener('resize', fit);
+  fit(); addEventListener('resize', soloLarghezza(fit));
 })();
 </script>
 <script>
@@ -1265,7 +1272,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
     else if (inVista) meta = Math.min(1, Math.max(0, meta - dy / 440));
     if (!giro) giro = requestAnimationFrame(passo);
   }, { passive: true });
-  addEventListener('resize', disegna);
+  addEventListener('resize', soloLarghezza(disegna));
   disegna();
   // dal T4S Core al team, comandato dalla rotella. Arrivati in fondo al Core il palco resta fermo: scorrendo, la pagina
   // va a destra come verso un'altra pagina: Core e team stanno sulla stessa linea, uno accanto all'altro, e scorrono
@@ -1299,7 +1306,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
     lato = Math.min(1, Math.max(0, (posizione() - misure.a) / tratto));
     if (!giroLato) giroLato = requestAnimationFrame(passoLato);
   }, { passive: true });
-  misura(); addEventListener('resize', misura); addEventListener('load', misura);
+  misura(); addEventListener('resize', soloLarghezza(misura)); addEventListener('load', misura);
   // i link a Core e team portano al punto giusto del percorso
   document.querySelectorAll('a[href="#core"], a[href="#team"]').forEach(function (l) {
     l.addEventListener('click', function (e) {
@@ -1347,7 +1354,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
     disegnaMoto(); giroMoto = fermi ? 0 : requestAnimationFrame(passoMoto);
   }
   addEventListener('scroll', function () { bersagliMoto(); if (!giroMoto) giroMoto = requestAnimationFrame(passoMoto); }, { passive: true });
-  misuraMoto(); addEventListener('resize', misuraMoto); addEventListener('load', misuraMoto);
+  misuraMoto(); addEventListener('resize', soloLarghezza(misuraMoto)); addEventListener('load', misuraMoto);
   // I SEI PASSI: come il passaggio dal Core al team. Quando il percorso arriva sullo schermo resta fermo e, scorrendo,
   // scivola verso sinistra quanto scorri tu, mentre la luce percorre la curva e accende le tappe una dopo l'altra
   // (all'inizio solo la prima), un po' più piano dello scorrimento. Finito il percorso si riprende a scendere.
@@ -1389,7 +1396,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
     };
     var passoPassi = function () { pOra += (pMeta - pOra) * .25; if (Math.abs(pMeta - pOra) < .5) { pOra = pMeta; pGiro = 0; } else pGiro = requestAnimationFrame(passoPassi); disegnaPassi(); };
     addEventListener('scroll', function () { metaPassi(); if (!pGiro) pGiro = requestAnimationFrame(passoPassi); }, { passive: true });
-    misuraPassi(); addEventListener('resize', misuraPassi); addEventListener('load', misuraPassi);
+    misuraPassi(); addEventListener('resize', soloLarghezza(misuraPassi)); addEventListener('load', misuraPassi);
   }
   // CRM SU MISURA, COME LAVORIAMO: la luce scende lungo la linea seguendo lo scorrimento (la pagina non si ferma) e
   // accende ogni punto quando lo raggiunge, cioè quando il punto arriva poco sotto la metà dello schermo (sul telefono al 40%).
@@ -1401,7 +1408,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
     var fDisegna = function () { filo.style.setProperty('--h', fOra.toFixed(1) + 'px'); filo.style.setProperty('--k', (fOra / Math.max(1, filo.clientHeight - 60)).toFixed(4)); fNodi.forEach(function (nd) { nd.classList.toggle('accesa', nd.offsetTop <= fOra + 1); }); };
     var fPasso = function () { fOra += (fMeta - fOra) * .12; if (Math.abs(fMeta - fOra) < .5) { fOra = fMeta; fGiro = 0; } else fGiro = requestAnimationFrame(fPasso); fDisegna(); };
     addEventListener('scroll', function () { fBersaglio(); if (!fGiro) fGiro = requestAnimationFrame(fPasso); }, { passive: true });
-    fBersaglio(); fOra = fMeta; fDisegna(); addEventListener('resize', function () { fBersaglio(); fDisegna(); });
+    fBersaglio(); fOra = fMeta; fDisegna(); addEventListener('resize', soloLarghezza(function () { fBersaglio(); fDisegna(); }));
   }
   // TITOLI: ognuno con un segno diverso, legato alla frase e comandato dallo scorrimento. "Dal primo contatto..." si
   // accende parola per parola, come se lo leggessi; "vantaggio competitivo
@@ -1421,7 +1428,7 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
       else h.style.setProperty('--k', (k * k * (3 - 2 * k)).toFixed(3));
     });
   }
-  segniTitoli(); addEventListener('scroll', function () { requestAnimationFrame(segniTitoli); }, { passive: true }); addEventListener('resize', segniTitoli);
+  segniTitoli(); addEventListener('scroll', function () { requestAnimationFrame(segniTitoli); }, { passive: true }); addEventListener('resize', soloLarghezza(segniTitoli));
   if (matchMedia('(hover: hover)').matches) carte.forEach(function (c) {
     c.addEventListener('mousemove', function (e) { var r = c.getBoundingClientRect(); c._hx = ((e.clientX - r.left) / r.width - .5) * 7; c._hy = -((e.clientY - r.top) / r.height - .5) * 6; disegna(); });
     c.addEventListener('mouseleave', function () { c._hx = 0; c._hy = 0; disegna(); });
