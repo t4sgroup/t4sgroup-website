@@ -318,6 +318,7 @@ main, footer { overflow-x: clip; }
 .modulo input:hover { border-color: rgba(255,255,255,.2); } .modulo input:focus { border-color: rgba(255,255,255,.45); background: rgba(255,255,255,.06); }
 .modulo .invio { margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .modulo .nota { font-size: 13px; line-height: 20px; color: var(--fg-50); }
+.modulo .nota a { text-decoration: underline; text-underline-offset: 2px; transition: color .2s; } .modulo .nota a:hover { color: #fff; }
 .modulo .btn-white { flex: none; padding: 5px 18px; border: 0; cursor: pointer; font-family: inherit; }
 .grazie .modulo-in { padding: 34px 26px; text-align: center; } .grazie p { margin-top: 6px; font-size: 16px; line-height: 26px; color: rgba(255,255,255,.7); }
 .modulo[hidden], .grazie[hidden] { display: none; }
@@ -864,11 +865,11 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   <div class="piattaforme">
     <p>Le piattaforme su cui lavoriamo ogni giorno</p>
     <div class="nomi">
-      <span><img src="https://svgl.app/library/salesforce.svg" alt="">Salesforce</span>
-      <span><img src="https://cdn.simpleicons.org/hubspot" alt="">HubSpot</span>
-      <span><img src="https://svgl.app/library/mulesoft.svg" alt="" style="width:22px;object-fit:cover;object-position:left">MuleSoft</span>
-      <span><img src="https://cdn.jsdelivr.net/gh/gilbarbara/logos/logos/tableau-icon.svg" alt="">Tableau</span>
-      <span><img src="https://cdn.simpleicons.org/claude" alt="">Claude</span>
+      <span><img src="img/loghi/salesforce.svg" alt="">Salesforce</span>
+      <span><img src="img/loghi/hubspot.svg" alt="">HubSpot</span>
+      <span><img src="img/loghi/mulesoft.svg" alt="" style="width:22px;object-fit:cover;object-position:left">MuleSoft</span>
+      <span><img src="img/loghi/tableau.svg" alt="">Tableau</span>
+      <span><img src="img/loghi/claude.svg" alt="">Claude</span>
     </div>
   </div>
   <div class="shade"></div>
@@ -1036,7 +1037,7 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
         <div><label for="f-citta">Città</label><input id="f-citta" type="text" name="city" maxlength="40" autocomplete="address-level2"></div>
         <div><label for="f-cantone">Cantone / Regione</label><input id="f-cantone" type="text" name="state" maxlength="20" autocomplete="address-level1"></div>
       </div>
-      <div class="invio"><p class="nota">Inviando i dati accetti che ti ricontattiamo per la consulenza.</p><button class="btn-white" type="submit">Invia richiesta</button></div>
+      <div class="invio"><p class="nota">Usiamo i tuoi dati per rispondere alla tua richiesta, come spiegato nell’<a href="/informativa-privacy/">informativa privacy</a>.</p><button class="btn-white" type="submit">Invia richiesta</button></div>
       </div>
     </form>
     <div class="grazie" role="status" hidden><div class="modulo-in"><b>Grazie, abbiamo ricevuto la richiesta.</b><p>Uno dei soci vi scrive a breve per fissare il primo incontro.</p></div></div>
