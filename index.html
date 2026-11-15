@@ -1025,17 +1025,15 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   <div class="cta-card">
     <h2 class="h2">Parliamo di come lavorate oggi.</h2>
     <p class="cta-sub">Un primo incontro con uno dei soci, senza impegno: capiamo come lavorate e vi diciamo cosa conviene fare.</p>
-    <form class="modulo" action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&amp;orgId=00Dbk000002apin" method="POST">
-      <input type="hidden" name="oid" value="00Dbk000002apin"><input type="hidden" name="retURL" value="https://www.t4sgroup.com/?lead=ok#contatti"><input type="hidden" name="lead_source" value="Web">
+    <form class="modulo" action="https://60a66366.sibforms.com/serve/MUIFAE3jFrUcsD1MOV2Zv6pP1dd8bda7NzpMrN7JWZYqnV2Szw-We9B1WTED9eU6sjRm504u53EI83GctG-oBDbvdvVXO2I8VLOEJMXJYa2DMTFHUrqyFB4uN3AmoDo_ioxsNGtirQfT2MwgCKi3kqbhXZt4FW8BhuWwjU-gwVdxJMui3NP6E6wtQrj6_HaEKyBzMywDc92K7DJFaA==" method="POST">
+      <input type="hidden" name="email_address_check" value=""><input type="hidden" name="locale" value="en"><input type="hidden" name="html_type" value="simple">
       <div class="modulo-in">
       <h3>Richiedi una consulenza</h3>
       <div class="campi">
-        <div><label for="f-nome">Nome</label><input id="f-nome" type="text" name="first_name" maxlength="40" required autocomplete="given-name"></div>
-        <div><label for="f-cognome">Cognome</label><input id="f-cognome" type="text" name="last_name" maxlength="80" required autocomplete="family-name"></div>
-        <div class="largo"><label for="f-email">Email</label><input id="f-email" type="email" name="email" maxlength="80" required autocomplete="email"></div>
-        <div class="largo"><label for="f-azienda">Azienda</label><input id="f-azienda" type="text" name="company" maxlength="40" required autocomplete="organization"></div>
-        <div><label for="f-citta">Città</label><input id="f-citta" type="text" name="city" maxlength="40" autocomplete="address-level2"></div>
-        <div><label for="f-cantone">Cantone / Regione</label><input id="f-cantone" type="text" name="state" maxlength="20" autocomplete="address-level1"></div>
+        <div><label for="f-nome">Nome</label><input id="f-nome" type="text" name="FIRSTNAME" maxlength="40" required autocomplete="given-name"></div>
+        <div><label for="f-cognome">Cognome</label><input id="f-cognome" type="text" name="LASTNAME" maxlength="80" required autocomplete="family-name"></div>
+        <div class="largo"><label for="f-email">Email</label><input id="f-email" type="email" name="EMAIL" maxlength="80" required autocomplete="email"></div>
+        <div class="largo"><label for="f-azienda">Azienda</label><input id="f-azienda" type="text" name="AZIENDA" maxlength="40" required autocomplete="organization"></div>
       </div>
       <div class="invio"><p class="nota">Usiamo i tuoi dati per rispondere alla tua richiesta, come spiegato nell’<a href="/informativa-privacy/">informativa privacy</a>.</p><button class="btn-white" type="submit">Invia richiesta</button></div>
       </div>
@@ -1459,7 +1457,8 @@ function linea(pt) { return 'M' + pt.map(function (p) { return p.join(' '); }).j
 })();
 // INDIRIZZI DEL SITO VECCHIO: le sue ancore (#contacts, #people...) portano alle sezioni nuove.
 (function () { var v = { home: 'top', horizons: 'servizi', 't4s-core': 'core', 'tech-stack': 'servizi', 'from-vision': 'metodo', people: 'team', contacts: 'contatti' }, h = location.hash.slice(1); if (v[h]) location.replace('#' + v[h]); })();
-// DOPO L'INVIO: Salesforce riporta qui con ?lead=ok e al posto del modulo compare il ringraziamento.
+// DOPO L'INVIO: dal 15/11/2026 il modulo va a Brevo, nella lista «Contatti dal sito», che riporta qui con ?lead=ok
+// (impostato nel modulo di Brevo); al posto del modulo compare il ringraziamento.
 if (/[?&]lead=ok\b/.test(location.search)) { document.querySelector('.modulo').hidden = true; document.querySelector('.grazie').hidden = false; }
 </script>
 </body>
